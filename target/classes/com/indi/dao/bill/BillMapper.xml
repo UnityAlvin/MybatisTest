@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.indi.dao.bill.BillMapper">
+    <select id="getBillCountByProviderID" resultType="int">
+        select count(*) from smbms.smbms_bill where providerId = #{providerID}
+    </select>
+
+    <insert id="add" parameterType="Bill">
+        insert into smbms.smbms_bill (billCode, productName, productDesc, productUnit, productCount, totalPrice,
+        isPayment, createdBy, creationDate, modifyBy, modifyDate, providerId)
+        values (#{billCode}, #{productName}, #{productDesc}, #{productUnit}, #{productCount}, #{totalPrice},
+        #{isPayment}, #{createdBy}, #{creationDate}, #{modifyBy}, #{modifyDate}, #{providerId});
+    </insert>
+
+    <sql id="if-Bill">
+        <if test="productName!=null">
+            productName=#{productName}
+        </if>
+        <if test="providerID!=null">
+            and providerID = #{providerID}
+        </if>
+        <if test="isPayment!=null">
+            and isPayment = #{isPayment}
+        </if>
+    </sql>
+    <select id="getBillList" resultType="Bill" parameterType="map">
+        select * from smbms.smbms_bill
+
+        <where>
+            <include refid="if-Bill"></include>
+        </where>
+    </select>
+
+    <select id="getBillCount" resultType="int">
+        select count(*) from smbms.smbms_bill
+        <where>
+            <include refid="if-Bill"></include>
+        </where>
+    </select>
+
+    <delete id="deleteBillByID">
+        delete from smbms.smbms_bill where id = #{id}
+    </delete>
+
+    <select id="getBillByID" resultType="Bill" >
+        select * from smbms.smbms_bill where id = #{id};
+    </select>
+
+    <update id="modify" parameterType="Bill">
+        update smbms.smbms_bill set billCode =#{billCode}, productName=#{productName}, productDesc=#{productDesc}, productUnit=#{productUnit}, productCount=#{productCount}, totalPrice=#{totalPrice},
+        isPayment=#{isPayment}, createdBy=#{createdBy}, creationDate=#{creationDate}, modifyBy=#{modifyBy}, modifyDate=#{modifyDate}, providerId =#{providerId }  where id = #{id};
+    </update>
+
+    <delete id="deleteByBillByProviderID">
+        delete from smbms.smbms_bill where providerId = #{providerID}
+    </delete>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.indi.dao.user.UserMapper">
+    <select id="getLoginUser" resultType="User">
+        select * from smbms.smbms_user where userCode = #{userCode};
+    </select>
+
+    <insert id="add" parameterType="User">
+        insert into smbms.smbms_user (userCode, userName, userPassword, gender, birthday, phone,
+        address, userRole, createdBy, creationDate, modifyBy, modifyDate, idPicpath, workPicPath)
+        values (#{userCode}, #{userName}, #{userPassword}, #{gender}, #{birthday}, #{phone},
+        #{address}, #{userRole}, #{createdBy}, #{creationDate}, #{modifyBy}, #{modifyDate}, #{idPicPath}, #{workPicPath});
+    </insert>
+
+    <sql id="if-user">
+        <if test="userName!=null">
+            userName = #{userName}
+        </if>
+        <if test="userRole!=null">
+            userRole = #{userRole}
+        </if>
+
+    </sql>
+    <select id="getUserList" parameterType="map" resultType="User">
+        select * from smbms.smbms_user
+        <where>
+            <include refid="if-user"></include>
+        </where>
+    </select>
+
+    <select id="getUserCount" resultType="int">
+        select count(*) from smbms.smbms_user
+        <where>
+            <include refid="if-user"></include>
+        </where>
+    </select>
+
+    <delete id="deleteUserByID">
+        delete from smbms.smbms_user where id = #{id}
+    </delete>
+
+    <select id="getUserByID" resultType="User">
+        select * from smbms.smbms_user where id = #{id};
+    </select>
+
+    <update id="modify" parameterType="User">
+        update smbms.smbms_user set userCode=#{userCode}, userName=#{userName}, userPassword=#{userPassword}, gender=#{gender}, birthday=#{birthday},
+         phone=#{phone}, address=#{address}, userRole=#{userRole}, createdBy=#{createdBy}, creationDate=#{creationDate}, modifyBy=#{modifyBy}, modifyDate=#{modifyDate},
+          idPicpath=#{idPicPath}, workPicPath =#{workPicPath}  where id=#{id};
+    </update>
+
+    <update id="updatePwd">
+        update smbms.smbms_user set userPassword=#{userPassword} where id=#{id};
+    </update>
+</mapper>
